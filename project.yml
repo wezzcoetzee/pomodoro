@@ -1,0 +1,42 @@
+name: Pomodoro
+options:
+  bundleIdPrefix: com.wcoetzee.pomodoro
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    CODE_SIGNING_REQUIRED: NO
+    CODE_SIGNING_ALLOWED: NO
+
+targets:
+  Pomodoro:
+    type: application
+    platform: macOS
+    sources:
+      - path: Sources/Pomodoro
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wcoetzee.pomodoro.app
+        INFOPLIST_KEY_LSUIElement: YES
+        INFOPLIST_KEY_NSHumanReadableCopyright: ""
+        GENERATE_INFOPLIST_FILE: YES
+        ENABLE_HARDENED_RUNTIME: YES
+        COMBINE_HIDPI_IMAGES: YES
+
+  PomodoroTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Tests/PomodoroTests
+    dependencies:
+      - target: Pomodoro
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.wcoetzee.pomodoro.tests
+        GENERATE_INFOPLIST_FILE: YES

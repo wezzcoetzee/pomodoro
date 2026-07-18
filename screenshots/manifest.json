@@ -1,0 +1,52 @@
+{
+  "app": "Pomodoro",
+  "platform": "mac",
+  "scheme": "Pomodoro",
+  "bundleId": "com.wcoetzee.pomodoro.app",
+  "bg1": "#F6623D",
+  "bg2": "#140E0C",
+  "text": "#F2EDEC",
+  "window": { "size": "380x480", "appName": "Pomodoro" },
+  "frame": "mac",
+  "compositeSize": "2880x1800",
+  "template": "screenshots/templates/frame-mac-panel.html",
+  "screens": [
+    {
+      "id": "focus",
+      "launchArgs": ["-uiScreenshots", "-uiScreen", "focus"],
+      "headline": "One block at a time",
+      "subheadline": "Name the work, start the timer, stay honest",
+      "settle": 4
+    },
+    {
+      "id": "setup",
+      "launchArgs": ["-uiScreenshots", "-uiScreen", "setup"],
+      "headline": "Every block starts with an intention",
+      "subheadline": "Name it, link the ticket, go",
+      "settle": 4
+    },
+    {
+      "id": "break",
+      "launchArgs": ["-uiScreenshots", "-uiScreen", "break"],
+      "headline": "Breaks are part of the work",
+      "subheadline": "The whole app cools down with you",
+      "settle": 4,
+      "bg1": "#36BABA",
+      "bg2": "#091111"
+    },
+    {
+      "id": "history",
+      "launchArgs": ["-uiScreenshots", "-uiScreen", "history"],
+      "headline": "Watch the streak grow",
+      "subheadline": "Every block lands in your history",
+      "settle": 4
+    },
+    {
+      "id": "celebration",
+      "launchArgs": ["-uiScreenshots", "-uiScreen", "celebration"],
+      "headline": "Finish feels like something",
+      "subheadline": "Streaks and daily counts, celebrated",
+      "settle": 4
+    }
+  ]
+}

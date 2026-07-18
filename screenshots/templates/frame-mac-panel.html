@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 100%; height: 100%; overflow: hidden; }
+  html { background: {{BG2}}; }
+  body {
+    background:
+      radial-gradient(90vw 90vw at 50% -30vw, rgba(255, 255, 255, 0.14), transparent 60%),
+      linear-gradient(170deg, {{BG1}} 0%, {{BG2}} 78%);
+    color: {{TEXT}};
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .copy { text-align: center; padding: 4.2vw 12vw 0; }
+  h1 { font-weight: 800; letter-spacing: -0.02em; line-height: 1.08; font-size: 4vw; }
+  h2 { font-weight: 500; opacity: 0.78; line-height: 1.25; font-size: 1.85vw; margin-top: 1.1vw; }
+  .stage {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 2.5vw;
+  }
+  .device {
+    width: 26.4vw;
+    filter: drop-shadow(0 1.6vw 4vw rgba(0, 0, 0, 0.55));
+  }
+  .device img { display: block; width: 100%; }
+</style>
+</head>
+<body class="{{FRAME_CLASS}}">
+  <div class="copy">
+    <h1>{{HEADLINE}}</h1>
+    <h2>{{SUBHEADLINE}}</h2>
+  </div>
+  <div class="stage">
+    <div class="device"><img src="shot.png" alt=""></div>
+  </div>
+</body>
+</html>

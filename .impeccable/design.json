@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-17T22:00:00+12:00",
+  "title": "Design System: Pomodoro",
+  "extensions": {
+    "colorMeta": {
+      "focus-ember": { "role": "primary", "displayName": "Ember", "canonical": "oklch(68% 0.19 35)", "tonalRamp": ["oklch(20% 0.10 35)", "oklch(30% 0.13 35)", "oklch(40% 0.16 35)", "oklch(50% 0.18 35)", "oklch(60% 0.19 35)", "oklch(68% 0.19 35)", "oklch(80% 0.13 35)", "oklch(92% 0.05 35)"] },
+      "break-teal": { "role": "secondary", "displayName": "Tidal Teal", "canonical": "oklch(72% 0.11 195)", "tonalRamp": ["oklch(20% 0.06 195)", "oklch(30% 0.08 195)", "oklch(40% 0.10 195)", "oklch(52% 0.11 195)", "oklch(62% 0.11 195)", "oklch(72% 0.11 195)", "oklch(82% 0.08 195)", "oklch(92% 0.04 195)"] },
+      "streak-amber": { "role": "tertiary", "displayName": "Charged Amber", "canonical": "oklch(80% 0.16 85)", "tonalRamp": ["oklch(24% 0.07 85)", "oklch(36% 0.10 85)", "oklch(48% 0.12 85)", "oklch(58% 0.14 85)", "oklch(68% 0.15 85)", "oklch(80% 0.16 85)", "oklch(88% 0.11 85)", "oklch(94% 0.05 85)"] },
+      "reward-amber": { "role": "tertiary", "displayName": "Milestone Amber", "canonical": "oklch(84% 0.15 70)", "tonalRamp": ["oklch(24% 0.07 70)", "oklch(36% 0.10 70)", "oklch(48% 0.12 70)", "oklch(60% 0.14 70)", "oklch(72% 0.15 70)", "oklch(84% 0.15 70)", "oklch(90% 0.10 70)", "oklch(95% 0.05 70)"] },
+      "canvas": { "role": "neutral", "displayName": "Phase Canvas", "canonical": "oklch(17% 0.012 35)", "tonalRamp": ["oklch(15% 0.010 35)", "oklch(17% 0.012 35)", "oklch(22% 0.014 35)", "oklch(28% 0.015 35)", "oklch(34% 0.016 35)", "oklch(50% 0.014 35)", "oklch(72% 0.012 35)", "oklch(95% 0.006 35)"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Timer", "purpose": "The countdown digits. Largest element on every surface, monospaced figures, heavy weight." },
+      "label": { "displayName": "Label", "purpose": "Uppercase micro-labels with +0.8px kerning: badges, stat labels, metadata." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ring-fill", "value": "ease-in-out 300ms", "purpose": "Progress ring trim animation each tick; instant under reduced motion." },
+      { "name": "celebration", "value": "ease-out, under 1500ms total", "purpose": "Completion burst: amber ring sweep and scale. Collapses to a state change under reduced motion." }
+    ],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The start button on the session setup card. Phase accent fill, canvas label.",
+      "html": "<button class=\"ds-btn-primary\">Start focus</button>",
+      "css": ".ds-btn-primary { background: oklch(68% 0.19 35); color: oklch(17% 0.012 35); font-family: ui-rounded, system-ui; font-size: 15px; font-weight: 600; padding: 14px 48px; border: none; border-radius: 14px; cursor: pointer; transition: filter 0.2s; } .ds-btn-primary:hover { filter: brightness(1.08); } .ds-btn-primary:focus-visible { outline: 2px solid oklch(74% 0.13 35); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ticket Badge",
+      "kind": "chip",
+      "refersTo": "ticket-badge",
+      "description": "Parsed Jira/GitHub reference shown under the session name; deep-links on click.",
+      "html": "<span class=\"ds-ticket-badge\">IV-4821</span>",
+      "css": ".ds-ticket-badge { background: oklch(74% 0.13 35); color: oklch(17% 0.012 35); font-family: ui-rounded, system-ui; font-size: 11px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; cursor: pointer; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Session name and ticket paste fields on the setup card. Invalid ticket input shifts the stroke to accent-soft.",
+      "html": "<input class=\"ds-input\" placeholder=\"Name this session\" />",
+      "css": ".ds-input { background: oklch(22% 0.014 35); color: oklch(95% 0.006 35); font-family: ui-rounded, system-ui; font-size: 13px; padding: 10px 12px; border: 1px solid oklch(34% 0.016 35); border-radius: 10px; width: 100%; } .ds-input::placeholder { color: oklch(72% 0.012 35); } .ds-input:focus-visible { outline: none; border-color: oklch(68% 0.19 35); }"
+    },
+    {
+      "name": "History Row",
+      "kind": "card",
+      "refersTo": "history-row",
+      "description": "One completed session in the history list: name, ticket, per-block tally marks.",
+      "html": "<div class=\"ds-history-row\"><div><div class=\"ds-history-name\">Refactor campaign scheduler</div><div class=\"ds-history-meta\">IV-4821 · 4 blocks</div></div><div class=\"ds-history-bars\"><span></span><span></span><span></span><span></span></div></div>",
+      "css": ".ds-history-row { display: flex; justify-content: space-between; align-items: center; background: oklch(22% 0.014 35); border-radius: 10px; padding: 8px 12px; font-family: ui-rounded, system-ui; } .ds-history-name { color: oklch(95% 0.006 35); font-size: 15px; font-weight: 600; } .ds-history-meta { color: oklch(72% 0.012 35); font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; margin-top: 2px; } .ds-history-bars { display: flex; gap: 3px; } .ds-history-bars span { width: 7px; height: 14px; border-radius: 2px; background: oklch(68% 0.19 35); }"
+    },
+    {
+      "name": "Timer Ring",
+      "kind": "custom",
+      "refersTo": "display",
+      "description": "The signature component: hero digits inside a phase-accent progress ring with round caps.",
+      "html": "<div class=\"ds-ring\"><svg viewBox=\"0 0 240 240\" width=\"240\" height=\"240\"><circle cx=\"120\" cy=\"120\" r=\"104\" fill=\"none\" stroke=\"oklch(34% 0.016 35)\" stroke-width=\"16\"/><circle class=\"ds-ring-arc\" cx=\"120\" cy=\"120\" r=\"104\" fill=\"none\" stroke=\"oklch(68% 0.19 35)\" stroke-width=\"16\" stroke-linecap=\"round\" stroke-dasharray=\"653\" stroke-dashoffset=\"196\" transform=\"rotate(-90 120 120)\"/></svg><div class=\"ds-ring-digits\">18:42</div></div>",
+      "css": ".ds-ring { position: relative; width: 240px; height: 240px; } .ds-ring-digits { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: ui-rounded, system-ui; font-size: 76px; font-weight: 900; font-variant-numeric: tabular-nums; color: oklch(68% 0.19 35); } .ds-ring-arc { transition: stroke-dashoffset 0.3s ease-in-out; } @media (prefers-reduced-motion: reduce) { .ds-ring-arc { transition: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Momentum Engine",
+    "overview": "An instrument for focus that rewards you for running it. Quiet and contained while a block runs, a burst of committed color and motion at completion. Color is state: each session mode owns a named role, and the entire neutral scale re-derives from the active phase hue at runtime. One rounded geometric sans carries all hierarchy through weight and scale, with the timer digits as the undisputed hero.",
+    "keyCharacteristics": [
+      "Color encodes session state; neutrals are tinted per active phase hue.",
+      "One rounded geometric sans, extreme hierarchy, the timer as hero.",
+      "Flat and calm during a block, loud at completion.",
+      "Momentum (streaks, counts, progress) is the emotional payload."
+    ],
+    "rules": [
+      { "name": "The State-Is-Color Rule", "body": "Color is never chosen for looks alone. If the surface changes color, the session state changed. Focus, Break, Streak, and Reward each own their hue, and no role borrows another's.", "section": "colors" },
+      { "name": "The Earned-Accent Rule", "body": "Charged and Milestone Amber appear only at genuine momentum moments: the streak flame/count and the completion celebration. They are forbidden as ambient decoration.", "section": "colors" },
+      { "name": "The Hero-Digit Rule", "body": "The timer is always the largest thing on the screen during a session. Digits are monospaced so nothing jitters as they tick.", "section": "typography" },
+      { "name": "The Flat-At-Rest Rule", "body": "During an active block the surface is flat and quiet. The only motion is the ring's progress fill; the only lift is the completion celebration.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do let color encode session state; derive every color from the OKLCH triples in DesignTokens.swift, never a hand-tuned hex.",
+      "Do make the timer digits the hero: largest element on every surface, monospaced figures.",
+      "Do keep the active session surface calm and flat, then spend Charged Amber and motion on the completion moment only.",
+      "Do tint every neutral toward the active phase hue; never #000 or #fff.",
+      "Do honor accessibilityReduceMotion in every animated view.",
+      "Do use Canvas as the text color on any accent fill; Ink on accent fails AA."
+    ],
+    "donts": [
+      "Don't build a generic SaaS dashboard: no KPI tiles, no hero-metric template, no identical card grids.",
+      "Don't go sterile corporate: no navy-and-gray enterprise chrome.",
+      "Don't clutter the focus surface; stats and history live one layer back.",
+      "Don't spend Charged or Milestone Amber as ambient decoration.",
+      "Don't reach for gradient text, side-stripe borders, glassmorphism, or decorative shadows.",
+      "Don't use em dashes in any UI copy."
+    ]
+  }
+}

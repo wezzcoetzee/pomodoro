@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomodoro · Build Plan</title>
+<style>
+  :root {
+    --canvas: oklch(18% 0.012 40);
+    --canvas-raised: oklch(22% 0.014 40);
+    --canvas-sunken: oklch(15% 0.010 40);
+    --ink: oklch(93% 0.008 40);
+    --ink-dim: oklch(70% 0.012 40);
+    --ink-faint: oklch(52% 0.010 40);
+    --line: oklch(30% 0.014 40);
+    --focus: oklch(68% 0.19 35);
+    --focus-deep: oklch(55% 0.17 35);
+    --break: oklch(75% 0.12 180);
+    --streak: oklch(80% 0.16 85);
+    --danger: oklch(65% 0.19 25);
+    --mono: "SF Mono", ui-monospace, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif;
+    line-height: 1.6;
+    padding-bottom: 8rem;
+  }
+  main { max-width: 76rem; margin: 0 auto; padding: 0 2.5rem; }
+
+  header.hero {
+    padding: 5rem 2.5rem 3.5rem;
+    max-width: 76rem;
+    margin: 0 auto;
+  }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--focus);
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: clamp(2.6rem, 5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+  h1 .dim { color: var(--ink-faint); font-weight: 300; }
+  .hero p.lede {
+    margin-top: 1.4rem;
+    font-size: 1.15rem;
+    color: var(--ink-dim);
+    max-width: 62ch;
+  }
+
+  section { margin-top: 4.5rem; }
+  h2 {
+    font-size: 1.6rem;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+  }
+  h2 .num {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--focus);
+  }
+  .section-note { color: var(--ink-dim); max-width: 68ch; margin-bottom: 1.8rem; }
+  h3 { font-size: 1.05rem; font-weight: 650; margin: 1.8rem 0 0.6rem; }
+
+  .decision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .decision {
+    background: var(--canvas-raised);
+    padding: 1.1rem 1.3rem;
+  }
+  .decision .label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.35rem;
+  }
+  .decision .value { font-weight: 650; font-size: 0.98rem; }
+  .decision .detail { font-size: 0.85rem; color: var(--ink-dim); margin-top: 0.25rem; }
+
+  .arch {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .arch-col h4 {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.7rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .module {
+    background: var(--canvas-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.7rem;
+  }
+  .module.hot { border-color: color-mix(in oklch, var(--focus) 45%, var(--line)); }
+  .module b { display: block; font-size: 0.95rem; }
+  .module span { font-size: 0.82rem; color: var(--ink-dim); }
+
+  .surface-rules {
+    background: var(--canvas-sunken);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.6rem 1.8rem;
+    margin-top: 1.5rem;
+  }
+  .modes { display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0 1.4rem; }
+  .mode {
+    flex: 1; min-width: 14rem;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1rem 1.1rem;
+    background: var(--canvas-raised);
+  }
+  .mode .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 99px;
+    margin-bottom: 0.5rem;
+  }
+  .tag.a { background: color-mix(in oklch, var(--focus) 22%, transparent); color: var(--focus); }
+  .tag.b { background: color-mix(in oklch, var(--break) 20%, transparent); color: var(--break); }
+  .tag.c { background: color-mix(in oklch, var(--streak) 20%, transparent); color: var(--streak); }
+  .mode b { font-size: 0.95rem; }
+  .mode p { font-size: 0.85rem; color: var(--ink-dim); margin-top: 0.3rem; }
+  .rule-line {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--ink);
+    padding: 0.5rem 0.9rem;
+    background: var(--canvas-raised);
+    border-radius: 6px;
+    margin-top: 0.5rem;
+  }
+  .rule-line .op { color: var(--focus); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 1.2rem; font-size: 0.92rem; }
+  .table-scroll { overflow-x: auto; }
+  th {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 500;
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  td code, .module code, li code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    background: var(--canvas-sunken);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    color: var(--break);
+  }
+  .muted { color: var(--ink-dim); }
+
+  .phase {
+    display: grid;
+    grid-template-columns: 3.2rem 1fr;
+    gap: 1.4rem;
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .phase:last-of-type { border-bottom: none; }
+  .phase-num {
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--focus);
+    line-height: 1.2;
+  }
+  .phase h3 { margin: 0 0 0.3rem; font-size: 1.15rem; }
+  .phase .who {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--streak);
+    margin-bottom: 0.5rem;
+  }
+  .phase p { color: var(--ink-dim); font-size: 0.94rem; max-width: 70ch; }
+  .phase ul { margin: 0.6rem 0 0 1.1rem; color: var(--ink-dim); font-size: 0.92rem; }
+  .phase li { margin-bottom: 0.25rem; }
+  .phase li b { color: var(--ink); font-weight: 600; }
+
+  .risk { border-left: none; }
+  .risks li { margin-bottom: 0.8rem; max-width: 75ch; }
+  .risks b { color: var(--ink); }
+  ul.risks { list-style: none; }
+  ul.risks li {
+    padding: 0.9rem 1.1rem;
+    background: var(--canvas-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  ul.risks li::before {
+    content: "⚠";
+    color: var(--streak);
+    margin-right: 0.6rem;
+  }
+
+  .timer-demo {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    background: var(--canvas-sunken);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 2rem 2.4rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .timer-digits {
+    font-family: var(--mono);
+    font-size: 4.5rem;
+    font-weight: 700;
+    color: var(--focus);
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .timer-meta .name { font-weight: 650; font-size: 1.05rem; }
+  .timer-meta .ticket {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--break);
+    margin-top: 0.2rem;
+  }
+  .timer-meta .phase-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 0.6rem;
+  }
+  footer {
+    margin-top: 5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--ink-faint);
+    font-size: 0.85rem;
+    max-width: 76rem;
+    margin-left: auto; margin-right: auto;
+    padding-left: 2.5rem; padding-right: 2.5rem;
+  }
+  @media (max-width: 52rem) { .arch { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="kicker">Build Plan · The Momentum Engine</div>
+  <h1>Pomodoro for macOS<br><span class="dim">menu bar first, momentum always</span></h1>
+  <p class="lede">A native SwiftUI menu bar app that runs focus blocks, names them, pins them to GitHub or Jira tickets, and turns finished sessions into visible momentum. One surface at a time: popover, pinned panel, or a floating mini card.</p>
+</header>
+
+<main>
+
+<section>
+  <h2><span class="num">01</span>Locked decisions</h2>
+  <p class="section-note">Everything below was confirmed in the shaping conversation. These are commitments, not options.</p>
+  <div class="decision-grid">
+    <div class="decision"><div class="label">Platform</div><div class="value">macOS 14+, SwiftUI + AppKit</div><div class="detail">Personal build, dev-signed, run via Xcode / xcodebuild</div></div>
+    <div class="decision"><div class="label">Tickets</div><div class="value">Paste ref + auto-detect</div><div class="detail">Jira keys (IV-123) and GitHub URLs/#123 parsed to deep links. No auth, no API.</div></div>
+    <div class="decision"><div class="label">Persistence</div><div class="value">SwiftData</div><div class="detail">Local store; history view with daily counts and streaks</div></div>
+    <div class="decision"><div class="label">Cycle</div><div class="value">Configurable presets</div><div class="detail">25/5 default, long break 15 every 4. All editable. Optional auto-advance.</div></div>
+    <div class="decision"><div class="label">Alerts</div><div class="value">Notifications + sound + menu bar countdown</div><div class="detail">Distinct sounds for focus-end vs break-end, all toggleable</div></div>
+    <div class="decision"><div class="label">Mini app</div><div class="value">Compact floating card</div><div class="detail">Frameless always-on-top panel: digits, name, progress, pause</div></div>
+    <div class="decision"><div class="label">Pinned mode</div><div class="value">Detached floating panel</div><div class="detail">Popover detaches to a pinned panel near the menu bar, visible across spaces</div></div>
+    <div class="decision"><div class="label">Design</div><div class="value">DESIGN.md seed governs</div><div class="detail">State-Is-Color, Hero-Digit, Earned-Accent, Flat-At-Rest rules</div></div>
+  </div>
+
+  <div class="timer-demo">
+    <div class="timer-digits">18:42</div>
+    <div class="timer-meta">
+      <div class="name">Refactor campaign scheduler</div>
+      <div class="ticket">⌁ IV-4821</div>
+      <div class="phase-label">Focus · block 2 of 4</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">02</span>Architecture</h2>
+  <p class="section-note">Three layers. The core is pure Swift and fully unit-testable with zero UI dependencies; surfaces are thin shells over the same engine and store.</p>
+  <div class="arch">
+    <div class="arch-col">
+      <h4>Core (pure Swift)</h4>
+      <div class="module hot"><b>TimerEngine</b><span>State machine: idle → focus → shortBreak / longBreak, pause/resume/skip. Drift-free via wall-clock deadline, not tick accumulation. Publishes phase + remaining.</span></div>
+      <div class="module"><b>SessionStore</b><span>SwiftData: <code>FocusSession</code> lifecycle, daily aggregates, streak computation.</span></div>
+      <div class="module"><b>TicketRef</b><span>Parser: Jira key regex, GitHub URL / owner#123. Produces deep link + display badge.</span></div>
+      <div class="module"><b>CyclePreset</b><span>Work/short/long durations, blocks-per-long-break, auto-advance flag.</span></div>
+    </div>
+    <div class="arch-col">
+      <h4>Shell (AppKit glue)</h4>
+      <div class="module hot"><b>SurfaceController</b><span>Owns the one-surface-at-a-time state machine. Swaps popover / pinned panel / mini card. The trickiest code in the app.</span></div>
+      <div class="module"><b>StatusItemController</b><span>NSStatusItem: icon reflects phase color, optional live countdown text.</span></div>
+      <div class="module"><b>FloatingPanel</b><span>NSPanel subclass: non-activating, .floating level, joins all spaces, draggable.</span></div>
+      <div class="module"><b>AlertCenter</b><span>UserNotifications + AVFoundation sounds, per-event toggles.</span></div>
+    </div>
+    <div class="arch-col">
+      <h4>Surfaces (SwiftUI)</h4>
+      <div class="module"><b>TimerView</b><span>Hero digits, progress ring, session name + ticket, controls. Shared by all three surfaces.</span></div>
+      <div class="module"><b>SessionSetupView</b><span>Name the block, paste a ticket ref, pick preset.</span></div>
+      <div class="module"><b>HistoryView</b><span>Sessions by day, streak strip, completion counts. Momentum, not KPI tiles.</span></div>
+      <div class="module"><b>SettingsView</b><span>Cycle presets, alerts, surface mode, launch at login.</span></div>
+      <div class="module"><b>CelebrationView</b><span>The completion moment. Streak color, motion; instant under reduced-motion.</span></div>
+    </div>
+  </div>
+
+  <h3>Surface exclusivity</h3>
+  <div class="surface-rules">
+    <div class="modes">
+      <div class="mode"><span class="tag a">Mode 1 · default</span><b>Menu bar popover</b><p>Click the status item, popover opens, dismisses on click-outside. No other window exists.</p></div>
+      <div class="mode"><span class="tag b">Mode 2</span><b>Pinned panel</b><p>Popover detaches into a non-activating panel anchored under the status item. Stays visible across apps and spaces until unpinned.</p></div>
+      <div class="mode"><span class="tag c">Mode 3</span><b>Mini floating card</b><p>Compact frameless always-on-top card, draggable anywhere. Status item still works but only toggles the card.</p></div>
+    </div>
+    <div class="rule-line">invariant <span class="op">⇒</span> exactly one surface mode active at any time</div>
+    <div class="rule-line">miniCard.visible <span class="op">⇒</span> popover disabled ∧ pinnedPanel closed</div>
+    <div class="rule-line">pinnedPanel.open <span class="op">⇒</span> miniCard hidden ∧ popover replaced by panel</div>
+    <div class="rule-line">mode switch <span class="op">⇒</span> timer state untouched (engine outlives surfaces)</div>
+  </div>
+
+  <h3>Data model</h3>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Entity</th><th>Fields</th><th>Notes</th></tr>
+    <tr><td>FocusSession</td><td><code>name</code>, <code>ticketRaw</code>, <code>ticketKind</code> (jira / github / none), <code>startedAt</code>, <code>endedAt</code>, <code>plannedSeconds</code>, <code>completedBlocks</code>, <code>outcome</code> (completed / abandoned)</td><td>One row per named session, which may span multiple blocks</td></tr>
+    <tr><td>BlockRecord</td><td><code>phase</code>, <code>startedAt</code>, <code>endedAt</code>, <code>wasCompleted</code>, relation → FocusSession</td><td>Per-block granularity feeds daily counts</td></tr>
+    <tr><td>Preferences</td><td class="muted">AppStorage, not SwiftData: preset values, alert toggles, surface mode, countdown-in-menu-bar</td><td>No entity needed</td></tr>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">03</span>Design system application</h2>
+  <p class="section-note">DESIGN.md is a seed; this build resolves it into real tokens. The rules that bind every UI agent:</p>
+  <div class="table-scroll">
+  <table>
+    <tr><th>Rule</th><th>In this app</th></tr>
+    <tr><td>State-Is-Color</td><td>Focus = warm ember (OKLCH ~68% 0.19 35). Break = cool teal. Streak/Reward = charged amber, completion only. The status item icon, progress ring, and neutrals all shift with phase.</td></tr>
+    <tr><td>Hero-Digit</td><td>Digits are the largest element on every surface, tabular figures, heavy weight. In the mini card they ARE the card.</td></tr>
+    <tr><td>Earned-Accent</td><td>Amber appears only in CelebrationView and the streak strip. Never ambient.</td></tr>
+    <tr><td>Flat-At-Rest</td><td>No shadows while a block runs. Depth appears on hover, panel entry, and completion.</td></tr>
+    <tr><td>A11y</td><td>WCAG AA contrast on all phase colors; <code>prefers-reduced-motion</code> (accessibilityReduceMotion) collapses celebration to a state change.</td></tr>
+  </table>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">04</span>Multi-agent workflow</h2>
+  <p class="section-note">Fable (this session) authors and supervises the workflow. Opus takes the hard, judgment-heavy seams (AppKit window management, UI craft, integration). Sonnet takes well-specified, testable modules. Every phase gates on a real <code>xcodebuild</code> pass, not agent self-report.</p>
+
+  <div class="phase">
+    <div class="phase-num">P0</div>
+    <div>
+      <h3>Scaffold</h3>
+      <div class="who">1 × OPUS</div>
+      <p>XcodeGen project (<code>project.yml</code> → <code>.xcodeproj</code>), app target (LSUIElement menu bar app), test target, folder layout matching the architecture columns above, empty-but-compiling stubs for every module. Gate: <code>xcodebuild build</code> green.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">P1</div>
+    <div>
+      <h3>Core modules, in parallel</h3>
+      <div class="who">4 × SONNET · independent, unit-tested, no UI</div>
+      <ul>
+        <li><b>TimerEngine</b> + drift/pause/skip/auto-advance tests</li>
+        <li><b>SwiftData models + SessionStore</b> + streak/daily-aggregate tests</li>
+        <li><b>TicketRef parser</b> + table-driven tests (Jira keys, GH URLs, #123, garbage input)</li>
+        <li><b>AlertCenter + Preferences</b> + tests for toggle matrix</li>
+      </ul>
+      <p style="margin-top:0.6rem">Gate: <code>xcodebuild test</code> green across all four.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">P2</div>
+    <div>
+      <h3>Shell + surfaces, in parallel</h3>
+      <div class="who">2 × OPUS + 1 × SONNET</div>
+      <ul>
+        <li><b>Opus A: window machinery.</b> SurfaceController, StatusItemController, FloatingPanel, detach/pin behavior, the exclusivity invariant.</li>
+        <li><b>Opus B: the four SwiftUI views</b> + resolved design tokens (Color/Font extensions), celebration motion, reduced-motion paths.</li>
+        <li><b>Sonnet: SettingsView + launch-at-login</b> + menu bar countdown text formatting.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">P3</div>
+    <div>
+      <h3>Integration + verification</h3>
+      <div class="who">1 × OPUS, then FABLE verifies</div>
+      <p>Wire engine → store → surfaces, resolve seam conflicts, full build + test run, then actually launch the app: confirm status item appears, popover opens, a short test session runs end-to-end, mode switching holds the invariant. Screenshot evidence where possible.</p>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-num">P4</div>
+    <div>
+      <h3>Review + polish</h3>
+      <div class="who">3 × SONNET reviewers → OPUS fixes</div>
+      <p>Parallel adversarial review lenses: correctness (timer drift, state machine holes), design-law compliance (bans, AA contrast, Hero-Digit), and platform correctness (activation policy, spaces behavior, notification permissions). Confirmed findings fixed by Opus, re-gated on build + tests. Finish by regenerating DESIGN.md from real code (scan mode) so the seed becomes truth.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">05</span>Risks &amp; open edges</h2>
+  <ul class="risks">
+    <li><b>Popover detachment.</b> True NSPopover detachment is fiddly; the plan sidesteps it by rendering the pinned panel as its own NSPanel positioned under the status item rather than literally detaching the popover.</li>
+    <li><b>Menu bar countdown width.</b> Live text next to the icon changes status item width every second; fixed-width tabular formatting avoids menu bar jitter.</li>
+    <li><b>Timer correctness through sleep.</b> Mac sleeps mid-block: engine must reconcile against wall-clock deadline on wake, not resume ticking naively. Covered by TimerEngine tests.</li>
+    <li><b>SwiftData in a menu bar app.</b> Fine unsandboxed for a personal build; the scaffold keeps the store path explicit so migration later is painless.</li>
+    <li><b>Headless verification limits.</b> Menu bar UI can't be fully asserted from CLI; P3 compensates with a scripted launch + accessibility inspection + human eyeball pass at the end.</li>
+  </ul>
+</section>
+
+</main>
+
+<footer>
+  Pomodoro · plan generated 2026-07-17 · PRODUCT.md and DESIGN.md govern all visual decisions · next step: approve → Fable authors the workflow script
+</footer>
+
+</body>
+</html>
