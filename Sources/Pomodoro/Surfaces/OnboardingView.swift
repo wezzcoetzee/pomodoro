@@ -10,10 +10,26 @@ struct OnboardingView: View {
     let onComplete: () -> Void
     let onSkip: () -> Void
 
-    @State private var step: Step = .welcome
+    @State private var step: Step
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private let palette = PomodoroColors.palette(for: .focus)
+
+    static let windowSize = CGSize(width: 440, height: 400)
+
+    init(
+        preferences: Preferences,
+        alertCenter: AlertCenter,
+        onComplete: @escaping () -> Void,
+        onSkip: @escaping () -> Void,
+        initialStep: Step = .welcome
+    ) {
+        self.preferences = preferences
+        self.alertCenter = alertCenter
+        self.onComplete = onComplete
+        self.onSkip = onSkip
+        _step = State(initialValue: initialStep)
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -39,7 +55,7 @@ struct OnboardingView: View {
             progressRow
         }
         .padding(28)
-        .frame(width: 440, height: 560, alignment: .top)
+        .frame(width: Self.windowSize.width, height: Self.windowSize.height, alignment: .top)
         .background(palette.canvas)
     }
 

@@ -1,4 +1,5 @@
 import AppKit
+import OSLog
 import UserNotifications
 
 enum AlertKind: String, CaseIterable {
@@ -64,7 +65,11 @@ protocol UserNotificationSending {
 
 extension UNUserNotificationCenter: UserNotificationSending {
     func requestNotificationAuthorization(completionHandler: @escaping (Bool) -> Void) {
-        requestAuthorization(options: [.alert, .sound]) { granted, _ in
+        requestAuthorization(options: [.alert, .sound]) { granted, error in
+            if let error {
+                Logger(subsystem: "com.wcoetzee.pomodoro.app", category: "alerts")
+                    .error("Notification authorization failed: \(error.localizedDescription)")
+            }
             DispatchQueue.main.async { completionHandler(granted) }
         }
     }

@@ -25,17 +25,24 @@ final class ScreenshotMode {
         let screen = Self.requestedScreen
         configureState(for: screen)
 
-        let root = SurfaceRootView(variant: .full, showHistory: screen == "history")
-            .environmentObject(model)
-            .frame(width: SurfaceMetrics.mainWidth, height: SurfaceMetrics.mainHeight)
-            .background(PomodoroColors.palette(for: model.engine.phase).canvas)
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        let root: AnyView
+        let size: CGSize
+        if screen == "onboarding" {
+            root = AnyView(onboardingRoot)
+            size = OnboardingView.windowSize
+        } else {
+            root = AnyView(
+                SurfaceRootView(variant: .full, showHistory: screen == "history")
+                    .environmentObject(model)
+                    .frame(width: SurfaceMetrics.mainWidth, height: SurfaceMetrics.mainHeight)
+                    .background(PomodoroColors.palette(for: model.engine.phase).canvas)
+                    .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            )
+            size = CGSize(width: SurfaceMetrics.mainWidth, height: SurfaceMetrics.mainHeight)
+        }
 
         let window = NSWindow(
-            contentRect: NSRect(
-                x: 0, y: 0,
-                width: SurfaceMetrics.mainWidth, height: SurfaceMetrics.mainHeight
-            ),
+            contentRect: NSRect(origin: .zero, size: size),
             styleMask: [.borderless],
             backing: .buffered,
             defer: false
@@ -76,6 +83,21 @@ final class ScreenshotMode {
             withIntermediateDirectories: true
         )
         try? data.write(to: url)
+    }
+
+    private var onboardingRoot: some View {
+        let steps: [String: OnboardingView.Step] = [
+            "welcome": .welcome, "loop": .loop,
+            "notifications": .notifications, "ready": .ready
+        ]
+        let step = Self.argumentValue("-uiOnboardingStep").flatMap { steps[$0] } ?? .welcome
+        return OnboardingView(
+            preferences: model.preferences,
+            alertCenter: AlertCenter(preferences: model.preferences),
+            onComplete: {},
+            onSkip: {},
+            initialStep: step
+        )
     }
 
     private static func argumentValue(_ flag: String) -> String? {
