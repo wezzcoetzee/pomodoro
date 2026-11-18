@@ -12,7 +12,9 @@ struct CelebrationView: View {
     var body: some View {
         if let moment = appModel.celebration {
             burst(moment)
-                .onAppear { trigger(); announce(moment) }
+                .onAppear {
+                    trigger(); announce(moment)
+                }
                 .task { await autoDismiss() }
         }
     }

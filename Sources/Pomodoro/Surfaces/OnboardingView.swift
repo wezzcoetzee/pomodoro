@@ -43,12 +43,13 @@ struct OnboardingView: View {
                 case .ready: readyStep
                 }
             }
-            .transition(reduceMotion
-                ? .identity
-                : .asymmetric(
-                    insertion: .move(edge: .trailing).combined(with: .opacity),
-                    removal: .opacity
-                ))
+            .transition(
+                reduceMotion
+                    ? .identity
+                    : .asymmetric(
+                        insertion: .move(edge: .trailing).combined(with: .opacity),
+                        removal: .opacity
+                    ))
 
             Spacer(minLength: 0)
 
@@ -80,9 +81,11 @@ struct OnboardingView: View {
             Text("Let's build some momentum.")
                 .pomodoroText(.headline)
                 .foregroundStyle(palette.ink)
-            Text("Pomodoro turns focused work into progress you can feel. Start a block, go heads-down, and watch your streak build. This takes about a minute.")
-                .pomodoroText(.body)
-                .foregroundStyle(palette.inkDim)
+            Text(
+                "Pomodoro turns focused work into progress you can feel. Start a block, go heads-down, and watch your streak build. This takes about a minute."
+            )
+            .pomodoroText(.body)
+            .foregroundStyle(palette.inkDim)
             primaryButton("Show me") { advance(to: .loop) }
         }
     }
@@ -107,9 +110,11 @@ struct OnboardingView: View {
             Text("Know the moment a block ends.")
                 .pomodoroText(.headline)
                 .foregroundStyle(palette.ink)
-            Text("You'll be heads-down in another app when the timer runs out. A notification is how Pomodoro taps you on the shoulder, so a finished block never turns into an accidental overrun. It's the only permission the app ever asks for.")
-                .pomodoroText(.body)
-                .foregroundStyle(palette.inkDim)
+            Text(
+                "You'll be heads-down in another app when the timer runs out. A notification is how Pomodoro taps you on the shoulder, so a finished block never turns into an accidental overrun. It's the only permission the app ever asks for."
+            )
+            .pomodoroText(.body)
+            .foregroundStyle(palette.inkDim)
             VStack(spacing: 12) {
                 primaryButton("Enable notifications") {
                     alertCenter.requestAuthorization { _ in }

@@ -99,13 +99,14 @@ final class TimerEngine: ObservableObject {
         deadline = nil
         setRemaining(0)
         completedFocusBlocksInCycle = 0
-        onPhaseFinished?(PhaseOutcome(
-            finishedPhase: finishedPhase,
-            completed: false,
-            didCompleteCycle: false,
-            nextPhase: .idle,
-            finishedAt: clock()
-        ))
+        onPhaseFinished?(
+            PhaseOutcome(
+                finishedPhase: finishedPhase,
+                completed: false,
+                didCompleteCycle: false,
+                nextPhase: .idle,
+                finishedAt: clock()
+            ))
     }
 
     func tick() {
@@ -139,13 +140,14 @@ final class TimerEngine: ObservableObject {
         let finishedAt = clock()
         deadline = nil
         let didCompleteCycle = advanceToNextPhase(after: finishedPhase)
-        onPhaseFinished?(PhaseOutcome(
-            finishedPhase: finishedPhase,
-            completed: completed,
-            didCompleteCycle: didCompleteCycle,
-            nextPhase: phase,
-            finishedAt: finishedAt
-        ))
+        onPhaseFinished?(
+            PhaseOutcome(
+                finishedPhase: finishedPhase,
+                completed: completed,
+                didCompleteCycle: didCompleteCycle,
+                nextPhase: phase,
+                finishedAt: finishedAt
+            ))
     }
 
     @discardableResult
@@ -192,20 +194,20 @@ final class TimerEngine: ObservableObject {
 }
 
 #if DEBUG
-extension TimerEngine {
-    /// Screenshot-mode hook: places the engine directly into a mid-phase state
-    /// without waiting out real time.
-    func debugConfigure(
-        phase: TimerPhase,
-        remainingSeconds: Int,
-        runState: TimerRunState = .running,
-        completedBlocksInCycle: Int = 0
-    ) {
-        self.phase = phase
-        completedFocusBlocksInCycle = completedBlocksInCycle
-        setRemaining(TimeInterval(remainingSeconds))
-        deadline = runState == .running ? clock().addingTimeInterval(TimeInterval(remainingSeconds)) : nil
-        self.runState = runState
+    extension TimerEngine {
+        /// Screenshot-mode hook: places the engine directly into a mid-phase state
+        /// without waiting out real time.
+        func debugConfigure(
+            phase: TimerPhase,
+            remainingSeconds: Int,
+            runState: TimerRunState = .running,
+            completedBlocksInCycle: Int = 0
+        ) {
+            self.phase = phase
+            completedFocusBlocksInCycle = completedBlocksInCycle
+            setRemaining(TimeInterval(remainingSeconds))
+            deadline = runState == .running ? clock().addingTimeInterval(TimeInterval(remainingSeconds)) : nil
+            self.runState = runState
+        }
     }
-}
 #endif

@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import Pomodoro
 
 final class ScaffoldTests: XCTestCase {

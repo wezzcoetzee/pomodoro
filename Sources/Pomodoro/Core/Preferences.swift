@@ -60,7 +60,8 @@ final class Preferences: ObservableObject {
         self.loginItemRegistrar = loginItemRegistrar
 
         if let storedSurfaceMode = defaults.string(forKey: Key.surfaceMode),
-           let restoredMode = SurfaceMode(rawValue: storedSurfaceMode) {
+            let restoredMode = SurfaceMode(rawValue: storedSurfaceMode)
+        {
             surfaceMode = restoredMode
         }
         showCountdownInMenuBar = Self.restoredBool(defaults, Key.showCountdownInMenuBar, showCountdownInMenuBar)
@@ -77,7 +78,8 @@ final class Preferences: ObservableObject {
 
     private static func restoredCyclePreset(_ defaults: UserDefaults, _ fallback: CyclePreset) -> CyclePreset {
         guard let data = defaults.data(forKey: Key.cyclePreset),
-              let restored = try? JSONDecoder().decode(CyclePreset.self, from: data) else {
+            let restored = try? JSONDecoder().decode(CyclePreset.self, from: data)
+        else {
             return fallback
         }
         return restored
@@ -90,7 +92,8 @@ final class Preferences: ObservableObject {
 
     private static func restoredAlertPolicy(_ defaults: UserDefaults, _ fallback: AlertPolicy) -> AlertPolicy {
         if let data = defaults.data(forKey: Key.alertPolicy),
-           let restored = try? JSONDecoder().decode(AlertPolicy.self, from: data) {
+            let restored = try? JSONDecoder().decode(AlertPolicy.self, from: data)
+        {
             return restored
         }
         return migratedLegacyAlertPolicy(defaults) ?? fallback
@@ -104,7 +107,7 @@ final class Preferences: ObservableObject {
             Key.legacyNotificationsEnabled,
             Key.legacyFocusEndedBannerEnabled,
             Key.legacyBreakEndedBannerEnabled,
-            Key.legacyCycleCompleteBannerEnabled
+            Key.legacyCycleCompleteBannerEnabled,
         ]
         guard legacyKeys.contains(where: { defaults.object(forKey: $0) != nil }) else { return nil }
 

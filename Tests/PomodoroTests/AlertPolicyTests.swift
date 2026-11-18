@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import Pomodoro
 
 final class AlertPolicyTests: XCTestCase {
@@ -50,7 +51,7 @@ final class AlertPolicyTests: XCTestCase {
             rules: [
                 .focusEnded: AlertPolicy.Rule(bannerEnabled: false, soundEnabled: true),
                 .breakEnded: AlertPolicy.Rule(bannerEnabled: true, soundEnabled: false),
-                .cycleComplete: AlertPolicy.Rule(bannerEnabled: true, soundEnabled: true)
+                .cycleComplete: AlertPolicy.Rule(bannerEnabled: true, soundEnabled: true),
             ]
         )
 

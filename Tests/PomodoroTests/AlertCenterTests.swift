@@ -1,5 +1,6 @@
-import XCTest
 import UserNotifications
+import XCTest
+
 @testable import Pomodoro
 
 final class FakeNotificationCenter: UserNotificationSending {

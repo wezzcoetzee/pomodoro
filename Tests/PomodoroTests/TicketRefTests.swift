@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import Pomodoro
 
 final class TicketRefTests: XCTestCase {
@@ -60,7 +61,7 @@ final class TicketRefTests: XCTestCase {
             kind: .github,
             displayBadge: "my-repo#7",
             deepLink: "https://github.com/my-org/my-repo/issues/7"
-        )
+        ),
     ]
 
     private static let rejectCases: [String] = [
@@ -81,7 +82,7 @@ final class TicketRefTests: XCTestCase {
         "owner/repo#",
         "owner#123",
         "IV123",
-        "-123"
+        "-123",
     ]
 
     func testAcceptedInputsParseCorrectly() {

@@ -75,7 +75,7 @@ final class StatusItemController {
             engine.$phase.map { _ in () }.eraseToAnyPublisher(),
             engine.$runState.map { _ in () }.eraseToAnyPublisher(),
             engine.$remainingSeconds.map { _ in () }.eraseToAnyPublisher(),
-            preferences.$showCountdownInMenuBar.map { _ in () }.eraseToAnyPublisher()
+            preferences.$showCountdownInMenuBar.map { _ in () }.eraseToAnyPublisher(),
         ]
 
         Publishers.MergeMany(changes)
@@ -90,7 +90,8 @@ final class StatusItemController {
         button.image = Self.glyph(for: engine.phase)
 
         let showsCountdown = preferences.showCountdownInMenuBar && engine.runState != .idle
-        button.attributedTitle = showsCountdown
+        button.attributedTitle =
+            showsCountdown
             ? Self.countdownTitle(engine.remainingSeconds)
             : NSAttributedString(string: "")
     }
