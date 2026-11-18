@@ -81,7 +81,8 @@ struct SettingsView: View {
 
     private var peonModeCaption: String {
         let pack = PeonSoundPack()
-        let base = "Plays your own peon voice lines for session events. "
+        let base =
+            "Plays your own peon voice lines for session events. "
             + "Drop sound files (wav, mp3, m4a, aiff) named ready-to-work, work-work, "
             + "jobs-done, more-work, me-busy, or what into the sounds folder."
         if pack.isEmpty {

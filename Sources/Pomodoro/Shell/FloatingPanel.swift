@@ -2,7 +2,8 @@ import AppKit
 
 final class FloatingPanel: NSPanel {
     init(contentRect: NSRect, borderless: Bool = false) {
-        let styleMask: NSWindow.StyleMask = borderless
+        let styleMask: NSWindow.StyleMask =
+            borderless
             ? [.nonactivatingPanel, .borderless, .fullSizeContentView]
             : [.nonactivatingPanel, .titled, .fullSizeContentView]
 

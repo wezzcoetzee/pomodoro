@@ -36,11 +36,13 @@ struct PeonSoundPack {
     private let soundURLs: [URL]
 
     init(directory: URL = PeonSoundPack.defaultDirectory) {
-        let contents = (try? FileManager.default.contentsOfDirectory(
-            at: directory,
-            includingPropertiesForKeys: nil
-        )) ?? []
-        soundURLs = contents
+        let contents =
+            (try? FileManager.default.contentsOfDirectory(
+                at: directory,
+                includingPropertiesForKeys: nil
+            )) ?? []
+        soundURLs =
+            contents
             .filter { Self.supportedExtensions.contains($0.pathExtension.lowercased()) }
             .sorted { $0.lastPathComponent < $1.lastPathComponent }
     }

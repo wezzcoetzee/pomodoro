@@ -73,7 +73,8 @@ enum TicketRefParser {
         guard let regex = try? NSRegularExpression(pattern: pattern) else { return nil }
         let range = NSRange(string.startIndex..., in: string)
         guard let match = regex.firstMatch(in: string, range: range),
-              let matchRange = Range(match.range, in: string) else { return nil }
+            let matchRange = Range(match.range, in: string)
+        else { return nil }
         return String(string[matchRange])
     }
 

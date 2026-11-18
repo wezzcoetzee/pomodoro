@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import Pomodoro
 
 @MainActor
@@ -439,19 +440,19 @@ final class TimerEngineTests: XCTestCase {
         let preset = autoAdvancePreset(focus: 5, short: 2, long: 8, blocksPerLongBreak: 3)
         let engine = makeEngine(preset: preset, clock: clock)
 
-        engine.start() // focus 1
-        clock.advance(5); engine.tick() // -> shortBreak
+        engine.start()  // focus 1
+        clock.advance(5); engine.tick()  // -> shortBreak
         XCTAssertEqual(engine.phase, .shortBreak)
-        clock.advance(2); engine.tick() // -> focus 2
+        clock.advance(2); engine.tick()  // -> focus 2
         XCTAssertEqual(engine.phase, .focus)
         XCTAssertEqual(engine.completedFocusBlocksInCycle, 1)
 
-        clock.advance(5); engine.tick() // -> shortBreak
-        clock.advance(2); engine.tick() // -> focus 3
+        clock.advance(5); engine.tick()  // -> shortBreak
+        clock.advance(2); engine.tick()  // -> focus 3
         XCTAssertEqual(engine.phase, .focus)
         XCTAssertEqual(engine.completedFocusBlocksInCycle, 2)
 
-        clock.advance(5); engine.tick() // 3rd focus complete -> longBreak
+        clock.advance(5); engine.tick()  // 3rd focus complete -> longBreak
 
         XCTAssertEqual(engine.phase, .longBreak)
         XCTAssertEqual(engine.remainingSeconds, 8)
@@ -464,17 +465,17 @@ final class TimerEngineTests: XCTestCase {
         let engine = makeEngine(preset: preset, clock: clock)
 
         engine.start()
-        clock.advance(5); engine.tick() // shortBreak
-        clock.advance(2); engine.tick() // focus 2
-        clock.advance(5); engine.tick() // longBreak, counter resets to 0
+        clock.advance(5); engine.tick()  // shortBreak
+        clock.advance(2); engine.tick()  // focus 2
+        clock.advance(5); engine.tick()  // longBreak, counter resets to 0
         XCTAssertEqual(engine.phase, .longBreak)
         XCTAssertEqual(engine.completedFocusBlocksInCycle, 0)
 
-        clock.advance(8); engine.tick() // focus
+        clock.advance(8); engine.tick()  // focus
         XCTAssertEqual(engine.phase, .focus)
         XCTAssertEqual(engine.completedFocusBlocksInCycle, 0)
 
-        clock.advance(5); engine.tick() // shortBreak again (not long)
+        clock.advance(5); engine.tick()  // shortBreak again (not long)
         XCTAssertEqual(engine.phase, .shortBreak)
     }
 
@@ -504,9 +505,9 @@ final class TimerEngineTests: XCTestCase {
         engine.onPhaseFinished = { outcomes.append($0) }
 
         engine.start()
-        clock.advance(5); engine.tick() // focus 1 -> shortBreak
-        clock.advance(2); engine.tick() // shortBreak -> focus 2
-        clock.advance(5); engine.tick() // focus 2 -> longBreak
+        clock.advance(5); engine.tick()  // focus 1 -> shortBreak
+        clock.advance(2); engine.tick()  // shortBreak -> focus 2
+        clock.advance(5); engine.tick()  // focus 2 -> longBreak
 
         let focusCycleOutcome = outcomes.last { $0.finishedPhase == .focus }
         XCTAssertEqual(focusCycleOutcome?.nextPhase, .longBreak)
@@ -583,7 +584,7 @@ final class TimerEngineTests: XCTestCase {
         let engine = makeEngine(preset: preset, clock: clock)
 
         engine.start()
-        clock.advance(5); engine.tick() // shortBreak, completedFocusBlocksInCycle == 1
+        clock.advance(5); engine.tick()  // shortBreak, completedFocusBlocksInCycle == 1
         XCTAssertEqual(engine.completedFocusBlocksInCycle, 1)
 
         engine.abandon()

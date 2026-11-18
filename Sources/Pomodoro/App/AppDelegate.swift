@@ -15,17 +15,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var tickTimer: Timer?
     private var cancellables: Set<AnyCancellable> = []
     #if DEBUG
-    private var screenshotMode: ScreenshotMode?
+        private var screenshotMode: ScreenshotMode?
     #endif
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         #if DEBUG
-        if ScreenshotMode.isActive {
-            let mode = ScreenshotMode(engine: engine, preferences: preferences)
-            screenshotMode = mode
-            mode.present()
-            return
-        }
+            if ScreenshotMode.isActive {
+                let mode = ScreenshotMode(engine: engine, preferences: preferences)
+                screenshotMode = mode
+                mode.present()
+                return
+            }
         #endif
         let statusItemController = StatusItemController(engine: engine, preferences: preferences)
         let surfaceController = SurfaceController(model: model)
