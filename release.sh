@@ -8,9 +8,11 @@ ROOT="$(cd "$(dirname "$0")" && pwd)"
 DIST="$ROOT/dist"
 DERIVED="$ROOT/build"
 
-# xcode-select points at CommandLineTools on this machine; override per-command
-# so no sudo is needed.
-export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
+# Machines where xcode-select points at CommandLineTools need full Xcode for
+# xcodebuild; override per-command so no sudo is needed. CI already has Xcode selected.
+if [[ -z "${DEVELOPER_DIR:-}" && "$(xcode-select -p)" == *CommandLineTools* ]]; then
+  export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+fi
 
 echo "▸ Regenerating project…"
 xcodegen generate --spec "$ROOT/project.yml" --project "$ROOT"

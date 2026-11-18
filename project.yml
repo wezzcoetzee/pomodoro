@@ -30,6 +30,9 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         ENABLE_HARDENED_RUNTIME: YES
         COMBINE_HIDPI_IMAGES: YES
+    scheme:
+      testTargets:
+        - PomodoroTests
 
   PomodoroTests:
     type: bundle.unit-test

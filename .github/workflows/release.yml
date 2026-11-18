@@ -1,0 +1,14 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    permissions:
+      contents: write
+    uses: wezzcoetzee/.github/.github/workflows/macos-release.yml@main
+    with:
+      setup-command: brew install xcodegen
+      build-command: ./release.sh "$VERSION"
