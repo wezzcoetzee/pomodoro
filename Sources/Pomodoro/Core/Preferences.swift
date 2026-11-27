@@ -6,6 +6,14 @@ enum SurfaceMode: String, Codable {
     case miniCard
 }
 
+/// The screen corner the floating orb snaps to.
+enum OrbCorner: String, Codable, CaseIterable {
+    case topLeft, topRight, bottomLeft, bottomRight
+
+    var isLeading: Bool { self == .topLeft || self == .bottomLeft }
+    var isTop: Bool { self == .topLeft || self == .topRight }
+}
+
 @MainActor
 final class Preferences: ObservableObject {
     private enum Key {
@@ -16,6 +24,9 @@ final class Preferences: ObservableObject {
         static let peonModeEnabled = "peonModeEnabled"
         static let alertPolicy = "alertPolicy"
         static let hasCompletedOnboarding = "hasCompletedOnboarding"
+        static let showsFloatingOrb = "showsFloatingOrb"
+        static let orbCorner = "orbCorner"
+        static let orbHiddenUntil = "orbHiddenUntil"
 
         // Superseded by alertPolicy; kept only so existing installs migrate once.
         static let legacyFocusEndSoundEnabled = "focusEndSoundEnabled"
@@ -32,6 +43,16 @@ final class Preferences: ObservableObject {
 
     @Published var surfaceMode: SurfaceMode = .popover {
         didSet { defaults.set(surfaceMode.rawValue, forKey: Key.surfaceMode) }
+    }
+    @Published var showsFloatingOrb: Bool = true {
+        didSet { defaults.set(showsFloatingOrb, forKey: Key.showsFloatingOrb) }
+    }
+    @Published var orbCorner: OrbCorner = .bottomRight {
+        didSet { defaults.set(orbCorner.rawValue, forKey: Key.orbCorner) }
+    }
+    /// Set from the orb's "Hide for an hour" / "Hide until tomorrow"; survives relaunch.
+    @Published var orbHiddenUntil: Date? {
+        didSet { defaults.set(orbHiddenUntil, forKey: Key.orbHiddenUntil) }
     }
     @Published var showCountdownInMenuBar: Bool = true {
         didSet { defaults.set(showCountdownInMenuBar, forKey: Key.showCountdownInMenuBar) }
@@ -64,6 +85,11 @@ final class Preferences: ObservableObject {
         {
             surfaceMode = restoredMode
         }
+        if let storedCorner = defaults.string(forKey: Key.orbCorner), let corner = OrbCorner(rawValue: storedCorner) {
+            orbCorner = corner
+        }
+        orbHiddenUntil = defaults.object(forKey: Key.orbHiddenUntil) as? Date
+        showsFloatingOrb = Self.restoredBool(defaults, Key.showsFloatingOrb, showsFloatingOrb)
         showCountdownInMenuBar = Self.restoredBool(defaults, Key.showCountdownInMenuBar, showCountdownInMenuBar)
         alertPolicy = Self.restoredAlertPolicy(defaults, alertPolicy)
         launchAtLogin = Self.restoredBool(defaults, Key.launchAtLogin, launchAtLogin)

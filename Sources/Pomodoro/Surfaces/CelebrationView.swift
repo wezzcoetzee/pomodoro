@@ -31,11 +31,11 @@ struct CelebrationView: View {
                         .stroke(palette.line, lineWidth: 14)
                     Circle()
                         .trim(from: 0, to: animateIn ? 1 : 0)
-                        .stroke(PomodoroColors.streak, style: StrokeStyle(lineWidth: 14, lineCap: .round))
+                        .stroke(PomodoroColors.done, style: StrokeStyle(lineWidth: 14, lineCap: .round))
                         .rotationEffect(.degrees(-90))
-                    Image(systemName: "flame.fill")
-                        .font(.system(size: 44, weight: .bold))
-                        .foregroundStyle(PomodoroColors.streak)
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 48, weight: .heavy))
+                        .foregroundStyle(PomodoroColors.done)
                 }
                 .frame(width: 150, height: 150)
 
@@ -44,6 +44,10 @@ struct CelebrationView: View {
                     .foregroundStyle(palette.ink)
 
                 HStack(spacing: 6) {
+                    Image(systemName: "flame.fill")
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(PomodoroColors.streak)
+                        .accessibilityHidden(true)
                     Text("\(moment.streak)")
                         .font(PomodoroFont.streakNumber)
                         .foregroundStyle(PomodoroColors.streak)

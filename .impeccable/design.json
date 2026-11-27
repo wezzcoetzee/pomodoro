@@ -6,6 +6,7 @@
     "colorMeta": {
       "focus-ember": { "role": "primary", "displayName": "Ember", "canonical": "oklch(68% 0.19 35)", "tonalRamp": ["oklch(20% 0.10 35)", "oklch(30% 0.13 35)", "oklch(40% 0.16 35)", "oklch(50% 0.18 35)", "oklch(60% 0.19 35)", "oklch(68% 0.19 35)", "oklch(80% 0.13 35)", "oklch(92% 0.05 35)"] },
       "break-teal": { "role": "secondary", "displayName": "Tidal Teal", "canonical": "oklch(72% 0.11 195)", "tonalRamp": ["oklch(20% 0.06 195)", "oklch(30% 0.08 195)", "oklch(40% 0.10 195)", "oklch(52% 0.11 195)", "oklch(62% 0.11 195)", "oklch(72% 0.11 195)", "oklch(82% 0.08 195)", "oklch(92% 0.04 195)"] },
+      "done-green": { "role": "tertiary", "displayName": "Done Green", "canonical": "oklch(78% 0.17 145)", "tonalRamp": ["oklch(24% 0.07 145)", "oklch(36% 0.10 145)", "oklch(48% 0.13 145)", "oklch(58% 0.15 145)", "oklch(68% 0.16 145)", "oklch(78% 0.17 145)", "oklch(88% 0.11 145)", "oklch(94% 0.05 145)"] },
       "streak-amber": { "role": "tertiary", "displayName": "Charged Amber", "canonical": "oklch(80% 0.16 85)", "tonalRamp": ["oklch(24% 0.07 85)", "oklch(36% 0.10 85)", "oklch(48% 0.12 85)", "oklch(58% 0.14 85)", "oklch(68% 0.15 85)", "oklch(80% 0.16 85)", "oklch(88% 0.11 85)", "oklch(94% 0.05 85)"] },
       "reward-amber": { "role": "tertiary", "displayName": "Milestone Amber", "canonical": "oklch(84% 0.15 70)", "tonalRamp": ["oklch(24% 0.07 70)", "oklch(36% 0.10 70)", "oklch(48% 0.12 70)", "oklch(60% 0.14 70)", "oklch(72% 0.15 70)", "oklch(84% 0.15 70)", "oklch(90% 0.10 70)", "oklch(95% 0.05 70)"] },
       "canvas": { "role": "neutral", "displayName": "Phase Canvas", "canonical": "oklch(17% 0.012 35)", "tonalRamp": ["oklch(15% 0.010 35)", "oklch(17% 0.012 35)", "oklch(22% 0.014 35)", "oklch(28% 0.015 35)", "oklch(34% 0.016 35)", "oklch(50% 0.014 35)", "oklch(72% 0.012 35)", "oklch(95% 0.006 35)"] }
@@ -74,14 +75,14 @@
     ],
     "rules": [
       { "name": "The State-Is-Color Rule", "body": "Color is never chosen for looks alone. If the surface changes color, the session state changed. Focus, Break, Streak, and Reward each own their hue, and no role borrows another's.", "section": "colors" },
-      { "name": "The Earned-Accent Rule", "body": "Charged and Milestone Amber appear only at genuine momentum moments: the streak flame/count and the completion celebration. They are forbidden as ambient decoration.", "section": "colors" },
+      { "name": "The Earned-Accent Rule", "body": "Done Green, Charged Amber and Milestone Amber appear only at genuine momentum moments: Done Green when a block completes, Charged Amber on the streak flame and count. They are forbidden as ambient decoration.", "section": "colors" },
       { "name": "The Hero-Digit Rule", "body": "The timer is always the largest thing on the screen during a session. Digits are monospaced so nothing jitters as they tick.", "section": "typography" },
       { "name": "The Flat-At-Rest Rule", "body": "During an active block the surface is flat and quiet. The only motion is the ring's progress fill; the only lift is the completion celebration.", "section": "elevation" }
     ],
     "dos": [
       "Do let color encode session state; derive every color from the OKLCH triples in DesignTokens.swift, never a hand-tuned hex.",
       "Do make the timer digits the hero: largest element on every surface, monospaced figures.",
-      "Do keep the active session surface calm and flat, then spend Charged Amber and motion on the completion moment only.",
+      "Do keep the active session surface calm and flat, then spend Done Green and motion on the completion moment only.",
       "Do tint every neutral toward the active phase hue; never #000 or #fff.",
       "Do honor accessibilityReduceMotion in every animated view.",
       "Do use Canvas as the text color on any accent fill; Ink on accent fails AA."
