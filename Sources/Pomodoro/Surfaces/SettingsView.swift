@@ -46,6 +46,10 @@ struct SettingsView: View {
             }
 
             Section("Surface") {
+                Toggle("Show floating timer", isOn: $preferences.showsFloatingOrb)
+                Text("A small ring that floats over every app. It nudges you after 20 minutes without a block.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 Picker("Timer surface", selection: $preferences.surfaceMode) {
                     ForEach(SurfaceMode.allCases, id: \.self) { mode in
                         Text(mode.title).tag(mode)

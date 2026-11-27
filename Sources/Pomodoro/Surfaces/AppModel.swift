@@ -21,6 +21,9 @@ final class AppModel: ObservableObject {
     @Published private(set) var activeName: String = ""
     @Published private(set) var activeTicket: TicketRef?
     @Published private(set) var celebration: CelebrationMoment?
+    /// When the engine last stopped running a phase; nil while one runs or is paused.
+    /// Drives the floating orb's idle escalation.
+    @Published private(set) var awaitingStartSince: Date?
 
     var onAlert: ((AlertKind) -> Void)?
     var onPeonEvent: ((PeonEvent) -> Void)?
@@ -38,6 +41,7 @@ final class AppModel: ObservableObject {
         self.preferences = preferences
         self.clock = clock
         self.blockStartedAt = clock()
+        self.awaitingStartSince = clock()
 
         engine.objectWillChange
             .sink { [weak self] in self?.objectWillChange.send() }
@@ -45,6 +49,11 @@ final class AppModel: ObservableObject {
 
         self.store.objectWillChange
             .sink { [weak self] in self?.objectWillChange.send() }
+            .store(in: &cancellables)
+
+        engine.$runState
+            .removeDuplicates()
+            .sink { [weak self] state in self?.trackAwaitingStart(state) }
             .store(in: &cancellables)
 
         engine.onPhaseFinished = { [weak self] outcome in
@@ -81,6 +90,10 @@ final class AppModel: ObservableObject {
         }
     }
 
+    var blocksToday: Int {
+        store.dailyCounts(lastNDays: 1).last?.count ?? 0
+    }
+
     var showsSetup: Bool {
         engine.runState == .idle
     }
@@ -98,6 +111,32 @@ final class AppModel: ObservableObject {
         )
         engine.start()
         onPeonEvent?(.sessionStarted)
+    }
+
+    /// One-click start used by the floating orb: begins an unnamed focus block
+    /// from idle, or starts the phase waiting when auto-advance is off.
+    func quickStart() {
+        switch engine.runState {
+        case .idle: startSession(name: "", ticket: nil)
+        case .ready: engine.start()
+        case .running, .paused: break
+        }
+    }
+
+    /// Restarts the idle clock, e.g. after the Mac wakes, so time asleep never
+    /// counts as time spent avoiding a block.
+    func resetAwaitingStart() {
+        guard awaitingStartSince != nil else { return }
+        awaitingStartSince = clock()
+    }
+
+    private func trackAwaitingStart(_ state: TimerRunState) {
+        switch state {
+        case .idle, .ready:
+            if awaitingStartSince == nil { awaitingStartSince = clock() }
+        case .running, .paused:
+            awaitingStartSince = nil
+        }
     }
 
     private func handlePhaseFinished(_ outcome: PhaseOutcome) {
@@ -169,7 +208,7 @@ final class AppModel: ObservableObject {
     func notifyFocusCompleted() {
         celebration = CelebrationMoment(
             streak: store.currentStreak(),
-            blocksToday: store.dailyCounts(lastNDays: 1).last?.count ?? 0
+            blocksToday: blocksToday
         )
     }
 

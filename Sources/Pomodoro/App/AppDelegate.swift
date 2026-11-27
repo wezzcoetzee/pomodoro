@@ -10,6 +10,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var statusItemController: StatusItemController?
     private var surfaceController: SurfaceController?
+    private var orbController: OrbController?
     private var alertCenter: AlertCenter?
     private var welcomeWindowController: WelcomeWindowController?
     private var tickTimer: Timer?
@@ -37,6 +38,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         self.statusItemController = statusItemController
         self.surfaceController = surfaceController
+
+        let orbController = OrbController(model: model)
+        orbController.onOpenTimer = { [weak surfaceController] in surfaceController?.reveal() }
+        self.orbController = orbController
 
         let alertCenter = AlertCenter(preferences: preferences)
         model.alertCenter = alertCenter

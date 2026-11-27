@@ -6,6 +6,7 @@ colors:
   focus-ember-soft: "oklch(74% 0.13 35)"
   break-teal: "oklch(72% 0.11 195)"
   break-teal-soft: "oklch(78% 0.08 195)"
+  done-green: "oklch(78% 0.17 145)"
   streak-amber: "oklch(80% 0.16 85)"
   streak-amber-soft: "oklch(86% 0.11 85)"
   reward-amber: "oklch(84% 0.15 70)"
@@ -101,7 +102,8 @@ Four named functional roles mapped to phases of the focus loop, on a dark phase-
 - **Tidal Teal** (oklch(72% 0.11 195)): The cool restful color of break phases. Every role Ember plays during focus, Teal plays during breaks, so a glance tells you the mode. **Teal Soft** (78% 0.08 195) is its badge/soft counterpart.
 
 ### Tertiary
-- **Charged Amber** (oklch(80% 0.16 85)): Streak flame and count, and the celebration ring burst. The app's rarest, highest-energy color.
+- **Done Green** (oklch(78% 0.17 145)): The moment a focus block completes, on every surface: the celebration ring and checkmark in the full timer, and the orb's one-shot completion flash. Always paired with a checkmark, so the moment never relies on telling green from Tidal Teal.
+- **Charged Amber** (oklch(80% 0.16 85)): Streak flame and count only. The app's rarest, highest-energy color.
 - **Milestone Amber** (oklch(84% 0.15 70)): Reward moments at milestones.
 
 ### Neutral
@@ -112,12 +114,12 @@ All neutrals are re-derived at runtime with the active phase's hue (35 during fo
 - **Ink** (oklch(95% 0.006 h)) / **Ink Dim** (oklch(72% 0.012 h)): Text hierarchy.
 - **On-Accent**: filled accent shapes always use Canvas as their text color, never Ink; light ink on an accent fill fails AA.
 
-Verified WCAG AA on the hue-35 canvas: ink 16.5:1, ink-dim 7.7:1, ember digits 6.1:1, teal digits 8.1:1, amber 10.1:1.
+Verified WCAG AA on the hue-35 canvas: ink 16.5:1, ink-dim 7.7:1, ember digits 6.1:1, teal digits 8.1:1, done green 10.2:1, amber 10.1:1.
 
 ### Named Rules
-**The State-Is-Color Rule.** Color is never chosen for looks alone. If the surface changes color, the session state changed. Focus, Break, Streak, and Reward each own their hue, and no role borrows another's.
+**The State-Is-Color Rule.** Color is never chosen for looks alone. If the surface changes color, the session state changed. Focus, Break, Done, Streak, and Reward each own their hue, and no role borrows another's.
 
-**The Earned-Accent Rule.** Charged and Milestone Amber appear only at genuine momentum moments: the streak flame/count and the completion celebration. They are forbidden as ambient decoration; the history activity bars use the phase accent, not amber.
+**The Earned-Accent Rule.** Done Green, Charged Amber and Milestone Amber appear only at genuine momentum moments: Done Green when a block completes, Charged Amber on the streak flame and count. They are forbidden as ambient decoration; the history activity bars use the phase accent, not amber.
 
 ## 3. Typography
 
@@ -167,16 +169,17 @@ Flat by default, everywhere. Depth is conveyed by the two-step tonal ladder (can
 
 ### Navigation
 - **Status item:** Phase-tinted timer glyph, optional live MM:SS countdown in monospaced digits (fixed width, no jitter). Left-click toggles the active surface; right-click opens Settings/Quit menu.
+- **Floating orb (always-on presence):** A timer ring in a borderless floating panel above every app and Space, snapped 20px into a screen corner (drag to move, snaps to the nearest corner). It escalates by idle time: quiet 40px Surface disc with an Ink Dim play glyph; after 20 min an Ember-outlined "Start focus" pill slides out once; after 45 min the pill fills Ember (Canvas text) and shows idle time. Hovering the quiet orb only brightens its play glyph to Ember; the pill never slides out on hover. While running it is a 56px ring (5px stroke) with heavy rounded minutes in the phase accent (Accent Soft when paused), phase accent arc, and pause/skip on hover. Click while idle starts focus; click while running opens the timer. "Hide for an hour" and "Hide until tomorrow" persist across relaunch. Depth comes from the system window shadow, which follows the drawn shape. No continuous motion: the pill slide (`PomodoroMotion.orbSlide`) runs once per state change and is instant under Reduce Motion. When a focus block completes the orb flashes a full Done Green ring with a checkmark for 1.2s, then returns to the phase.
 
 ### The Timer Ring (signature)
-- Full: 240px ring, 16px stroke; compact: 74px ring, 7px stroke. Line-colored track, phase-accent progress arc with round caps, digits centered. Ring fill animates 0.3s ease-in-out, instant under reduced motion. The celebration replays the ring in Charged Amber (150px, 14px stroke) for under 1.5s.
+- Full: 240px ring, 16px stroke; compact: 74px ring, 7px stroke. Line-colored track, phase-accent progress arc with round caps, digits centered. Ring fill animates 0.3s ease-in-out, instant under reduced motion. The celebration replays the ring in Done Green (150px, 14px stroke) with a checkmark for under 1.5s, with the amber flame beside the streak count.
 
 ## 6. Do's and Don'ts
 
 ### Do:
 - **Do** let color encode session state; derive every color from the OKLCH triples in `DesignTokens.swift`, never a hand-tuned hex (the status item tint included).
 - **Do** make the timer digits the hero: largest element on every surface, monospaced figures.
-- **Do** keep the active session surface calm and flat, then spend Charged Amber and motion on the completion moment only.
+- **Do** keep the active session surface calm and flat, then spend Done Green and motion on the completion moment only.
 - **Do** tint every neutral toward the active phase hue; never `#000` or `#fff`.
 - **Do** honor `accessibilityReduceMotion` in every animated view (ring fill and celebration both branch on it); motion degrades to instant state changes without losing information.
 - **Do** use Canvas as the text color on any accent fill (the On-Accent rule); Ink on accent fails AA.
@@ -185,7 +188,7 @@ Flat by default, everywhere. Depth is conveyed by the two-step tonal ladder (can
 - **Don't** build a **generic SaaS dashboard**: no KPI tiles, no hero-metric template, no identical card grids, no cool-gray Inter-everywhere sameness.
 - **Don't** go **sterile corporate**: no navy-and-gray enterprise chrome, no humorless flat tool.
 - **Don't** clutter the focus surface. Stats and history live one layer back behind an explicit toggle.
-- **Don't** spend Charged or Milestone Amber as ambient decoration; the history bars use the phase accent.
+- **Don't** spend Done Green, Charged or Milestone Amber as ambient decoration; the history bars use the phase accent.
 - **Don't** reach for gradient text, side-stripe borders, glassmorphism, or decorative shadows; the system is flat with a tonal ladder.
 - **Don't** use em dashes in any UI copy.
 

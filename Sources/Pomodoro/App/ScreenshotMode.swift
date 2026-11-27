@@ -30,6 +30,9 @@
             if screen == "onboarding" {
                 root = AnyView(onboardingRoot)
                 size = OnboardingView.windowSize
+            } else if screen == "orb" {
+                root = AnyView(orbSheet)
+                size = Self.orbSheetSize
             } else {
                 root = AnyView(
                     SurfaceRootView(variant: .full, showHistory: screen == "history")
@@ -99,6 +102,58 @@
                 onSkip: {},
                 initialStep: step
             )
+        }
+
+        /// Every orb state on one sheet, each tile with its own engine so idle and
+        /// running states can sit side by side.
+        private static let orbSheetSize = CGSize(width: 720, height: 680)
+
+        private var orbSheet: some View {
+            let base = Date()
+            let preferences = model.preferences
+            let tiles: [(caption: String, minutesIdle: Double, hover: Bool, corner: OrbCorner, phase: TimerPhase?)] = [
+                ("Quiet", 3, false, .bottomRight, nil),
+                ("Quiet, hover", 3, true, .bottomRight, nil),
+                ("Nudge, 20 min", 25, false, .bottomRight, nil),
+                ("Urge, 45 min", 52, false, .bottomRight, nil),
+                ("Urge, hover", 52, true, .bottomRight, nil),
+                ("Urge, left corner", 52, false, .bottomLeft, nil),
+                ("Focusing", 0, false, .bottomRight, .focus),
+                ("Focusing, hover", 0, true, .bottomRight, .focus),
+                ("Paused", 0, false, .bottomRight, .focus),
+                ("Block done", 0, false, .bottomRight, .shortBreak),
+                ("Break", 0, false, .bottomRight, .shortBreak),
+            ]
+            return VStack(alignment: .leading, spacing: 0) {
+                ForEach(Array(tiles.enumerated()), id: \.offset) { _, tile in
+                    let engine = TimerEngine()
+                    let tileModel = AppModel(engine: engine, store: Self.makeSeededStore(), preferences: preferences)
+                    if let phase = tile.phase {
+                        tileModel.startSession(name: "", ticket: nil)
+                        engine.debugConfigure(
+                            phase: phase,
+                            remainingSeconds: phase == .focus ? 17 * 60 + 32 : 3 * 60 + 47,
+                            runState: tile.caption == "Paused" ? .paused : .running
+                        )
+                    }
+                    let state = OrbViewState(now: base.addingTimeInterval(tile.minutesIdle * 60), corner: tile.corner)
+                    state.isHovering = tile.hover
+                    state.isCelebrating = tile.caption == "Block done"
+                    return HStack {
+                        Text(tile.caption)
+                            .font(.system(size: 13, weight: .semibold, design: .rounded))
+                            .foregroundStyle(Color(white: 0.85))
+                            .frame(width: 180, alignment: .leading)
+                        OrbView(state: state)
+                            .environmentObject(tileModel)
+                            .frame(maxWidth: .infinity, alignment: tile.corner.isLeading ? .leading : .trailing)
+                    }
+                    .frame(height: 60)
+                }
+            }
+            .padding(24)
+            .frame(width: Self.orbSheetSize.width, height: Self.orbSheetSize.height, alignment: .topLeading)
+            .background(OKLCH(l: 0.30, c: 0.03, h: 255).color)
         }
 
         private static func argumentValue(_ flag: String) -> String? {

@@ -12,7 +12,8 @@ import SwiftUI
 ///   Focus accentSoft  0.74 / 0.13 / 35
 ///   Break accent      0.72 / 0.11 / 195   cool restful teal
 ///   Break accentSoft  0.78 / 0.08 / 195
-///   Streak            0.80 / 0.16 / 85    charged amber, earned-accent only
+///   Done              0.78 / 0.17 / 145   done green, block-completion moment only
+///   Streak            0.80 / 0.16 / 85    charged amber, streak flame and count only
 ///   Reward            0.84 / 0.15 / 70    milestone amber, earned-accent only
 ///   Neutral canvas    0.17 / 0.012 / hue
 ///   Neutral surface   0.22 / 0.014 / hue
@@ -21,7 +22,7 @@ import SwiftUI
 ///   Neutral inkDim    0.72 / 0.012 / hue
 ///
 /// Verified WCAG AA (dark canvas, hue 35): ink 16.5:1, inkDim 7.7:1, focus digits
-/// 6.1:1, break digits 8.1:1, streak 10.1:1; filled badges use `onAccent` (the
+/// 6.1:1, break digits 8.1:1, done 10.2:1, streak 10.1:1; filled badges use `onAccent` (the
 /// canvas ink), never `ink`, because light ink on an accent fill fails AA.
 struct OKLCH {
     let l: Double
@@ -70,6 +71,8 @@ struct PhasePalette {
 }
 
 enum PomodoroColors {
+    /// The moment a focus block completes, on every surface. Nothing else is green.
+    static let done = OKLCH(l: 0.78, c: 0.17, h: 145).color
     static let streak = OKLCH(l: 0.80, c: 0.16, h: 85).color
     static let streakSoft = OKLCH(l: 0.86, c: 0.11, h: 85).color
     static let reward = OKLCH(l: 0.84, c: 0.15, h: 70).color
@@ -121,6 +124,8 @@ enum PomodoroMotion {
     /// Ease-out-quint. Fast start, long settle, no overshoot.
     static let ringFill = Animation.timingCurve(0.22, 1, 0.36, 1, duration: 0.35)
     static let celebrate = Animation.timingCurve(0.22, 1, 0.36, 1, duration: 0.45)
+    /// The orb's pill sliding out, and the orb growing from quiet. Same curve, one-shot.
+    static let orbSlide = Animation.timingCurve(0.22, 1, 0.36, 1, duration: 0.4)
 }
 
 enum PomodoroFont {
